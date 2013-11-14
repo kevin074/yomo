@@ -76,50 +76,63 @@ class SessionsController < ApplicationController
         refresh_token: session[:refresh_token] # may not be necessary
         )
 
-      # Request authorization
-      # redirect_uri = client.authorization.authorization_uri
+###############################################################################
+channels_response = client.execute!(
+  :api_method => youtube.channels.list,
+  :parameters => {
+    :mine => true,
+    :part => 'contentDetails',
+    # :fields => 'snippet(title)'
+  }
+)
+what2 = channels_response.data.items.to_json
+what2 = JSON.parse(what2)
+@what3 = what2[0]["contentDetails"]['uploads']
 
-    # Delete the following two lines in future if possible. We have already autheniticated using Google OAuth 2. 
-    # auth_util = CommandLineOAuthHelper.new(@YOUTUBE_SCOPES)
-    # client.authorization = auth_util.authorize()
+  # what2.each do |channel|
+uploads_list_id = what2[0]['contentDetails']['uploads']
 
-    # Wait for authorization code then exchange for token
-      # client.authorization.code = '...'
-      # client.authorization.fetch_access_token!
-    # client = Google::APIClient.new
+  playlistitems_response = client.execute!(
+    :api_method => youtube.playlist_items.list,
+    :parameters => {
+      :playlistId => 'UUHjzmXcM52GFvKQxsSEuZ-g',
+      :part => 'snippet',
+      # :maxResults => 50
+    }
+  )
 
-    # client.authorization = service_account.authorize
+@hi=playlistitems_response.data.items[0]['snippet']['title']
 
-    channels_response = client.execute!(
-      :api_method => youtube.channels.list,
-      :parameters => {
-        :mine => true,
-        :part => 'id'
-      }
-    )
+#   puts "Videos in list #{uploads_list_id}"
 
+#   playlistitems_response.data.items.each do |playlist_item|
+#     title = playlist_item['snippet']['title']
+#     video_id = playlist_item['snippet']['resourceId']['videoId']
+
+#     puts "#{title} (#{video_id})"
+#   end
+#   puts
+# end
+
+############################################################################################
+    
     channels_response.data.items.each do |channel|
       opts[:ids] = "channel==#{channel.id}"
+      end
 
       analytics_response = client.execute!(
         :api_method => youtube_analytics.reports.query,
         :parameters => opts
       )
 
-      puts "Analytics Data for Channel #{channel.id}"
+      # puts "Analytics Data for Channel #{channel.id}"
 
       analytics_response.data.columnHeaders.each do |column_header|
         printf '%-20s', column_header.name
       end
       puts
 
-      # analytics_response.data.rows.each do |row|
-      #   row.each do |value|
-      #     printf '%-20s', value
-      #   end
-      #   puts
-      # end
       @data = analytics_response.data.rows
     end
   end
-end
+

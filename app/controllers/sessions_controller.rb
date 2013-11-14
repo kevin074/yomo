@@ -43,7 +43,7 @@ class SessionsController < ApplicationController
     # one_week_ago = Time.at(now - SECONDS_IN_WEEK).strftime('%Y-%m-%d')
 
     opts = Trollop::options do
-      opt :metrics, 'Report metrics', :type => String, :default => 'views,comments,favoritesAdded,favoritesRemoved,likes,dislikes,shares'
+      opt :metrics, 'Report metrics', :type => String, :default => 'views'
       opt :dimensions, 'Report dimensions', :type => String, :default => 'video'
       opt 'start-date', 'Start date, in YYYY-MM-DD format', :type => String, :default => '2012-01-01'
       opt 'end-date', 'Start date, in YYYY-MM-DD format', :type => String, :default => '2013-11-11'

@@ -48,8 +48,8 @@ class SessionsController < ApplicationController
       opt 'start-date', 'Start date, in YYYY-MM-DD format', :type => String, :default => '2012-01-01'
       opt 'end-date', 'Start date, in YYYY-MM-DD format', :type => String, :default => '2013-11-11'
       opt 'start-index', 'Start index', :type => :int, :default => 1
-      opt 'max-results', 'Max results', :type => :int, :default => 5
-      opt :sort, 'Sort order', :type => String, :default => '-recent'
+      opt 'max-results', 'Max results', :type => :int, :default => 10
+      opt :sort, 'Sort order', :type => String, :default => '-views'
     end
 
     # Initialize the client, Youtube, and Youtube Analytics
@@ -96,7 +96,7 @@ uploads_list_id = what2[0]['contentDetails']['uploads']
     :parameters => {
       :playlistId => what2[0]['contentDetails']['relatedPlaylists']['uploads'],
       :part => 'snippet',
-      :maxResults => 5
+      :maxResults => 10
     }
   )
 
@@ -116,6 +116,7 @@ uploads_list_id = what2[0]['contentDetails']['uploads']
     @hash['thumbnails'] = JSON.parse(playlist_item.to_json)['snippet']['thumbnails']['medium']['url']
     @hi<<@hash
   end
+  
 
 #   puts
 # end
@@ -140,9 +141,16 @@ uploads_list_id = what2[0]['contentDetails']['uploads']
 
 
       @data = analytics_response.data.rows
+
+    for i in @hi do 
+      for k in @data
+        if i["id"] == k[0]
+          i["viewCount"]=k[1]
+        end
+      end
     end
   end
-
+end
 
 
 

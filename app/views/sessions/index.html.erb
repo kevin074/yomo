@@ -1,10 +1,13 @@
-<%= @hi %><br />
-===========================================<br />
-analytics: <br /> <%= @data %><br />
-=========================================== <br />
-API: <br />
-<% for i in @hi %>
-<%= i %><br /><br /><br />
+<%=@analytics_response%>
+<% for i in @youtubeDataAPI %>
+<p>Title: <%= i["title"] %></p>
+<p>Video ID: <%= i["id"] %></p>
+<p>Video URL: <%= i["url"] %></p>
+<p>Thumbnail: <%= i["thumbnails"] %></p>
+<p>Total Views: <%= i["totalViews"] %></p>
+<p>Average View Duration: <%= i["averageViewDuration"] %></p>
+<p>Average View Percentage: <%= i["averageViewPercentage"] %></p>
+<p>Traffic from Facebook: <%= i["facebookViews"] %></p>
+<p>Traffic from Twitter: <%= i["twitterViews"] %></p>
+<br><br>
 <%end%>
- 
-
